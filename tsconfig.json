@@ -1,3 +1,20 @@
 {
-  "extends": "@react-native/typescript-config/tsconfig.json"
+  "extends": "@react-native/typescript-config/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"],
+      "@bus-tracker/*": ["modules/bus_tracker/*"],
+      "@discover-puno/*": ["modules/discover-puno/*"],
+      "@phone-directory/*": ["modules/phone-directory/*"],
+      "@public-lighting/*": ["modules/public-lighting/*"],
+      "@puno-safe/*": ["modules/puno-safe/*"],
+      "@security/*": ["modules/security/*"],
+      "@service-desk/*": ["modules/service-desk/*"],
+      "@evidence-capture/*": ["modules/evidence-capture/*"],
+      "@tupa/*": ["modules/tupa/*"],
+      "@home/*": ["modules/home/*"],
+      "@solid-waste/*": ["modules/solid-waste/*"]
+    }
+  }
 }
