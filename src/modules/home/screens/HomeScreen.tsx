@@ -50,13 +50,13 @@ const cards: {
       iconName: 'shield', //iconSource: require('../assets/icons/proteger.png'),
       screen: 'DescubrePuno',
     },*/
-    // {
-    //   id: '6',
-    //   title: 'Chapa tu micro',
-    //   iconName: 'bus',
-    //   iconSource: require('@/assets/icons/micro.png'),
-    //   screen: 'MicroPuno',
-    // },
+    {
+      id: '6',
+      title: 'Chapa tu micro',
+      iconName: 'bus',
+      iconSource: require('@/assets/icons/micro.png'),
+      screen: 'MicroPuno',
+    },
     // {
     //   id: '5',
     //   title: 'Puno seguro',

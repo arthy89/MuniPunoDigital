@@ -23,13 +23,13 @@ const PhoneDirectoryScreen = () => {
 
   return (
     <View style={{ ...theme.container, gap: theme.spacing.md }}>
-      <InputBase
+      {/* <InputBase
         noBorder
         iconLeft={'search'}
         placeholder="Buscar"
         shadow
         onChangeValue={handleSearch}
-      />
+      /> */}
       <FlatListInfiniteScroll
         data={tupaProcedureList.data?.pages.flat() ?? []}
         keyExtractor={item => item.id.toString()}

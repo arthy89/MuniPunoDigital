@@ -23,7 +23,9 @@ const TupaDetailScreen = ({ route, navigation }: TupaScreenProps) => {
 
   const handleGetTupaDescription = async () => {
     try {
-      const data = await getTupaProcedure(code);
+      // Extraer solo la parte antes del punto (ej: "001" de "001. PA18059F89")
+      const codeBeforeDot = code.split('.')[0].trim();
+      const data = await getTupaProcedure(codeBeforeDot);
       setTramiteDetails(data.tupa);
     } catch (err) {
       console.error('Error al obtener los datos del trámite:', err);
@@ -53,14 +55,14 @@ const TupaDetailScreen = ({ route, navigation }: TupaScreenProps) => {
           <View style={styles.sectionBox}>
             <Text style={styles.cardTitle}>Requisitos</Text>
             {tramiteDetails[0].requisitos.map((item: any, index: number) => (
-              <View style={styles.listItem} key={item.cod_req}>
+              <View style={styles.listItem} key={item.codigo}>
                 <Icon
                   name="circle"
                   size={8}
                   color="#2986cc"
                   style={{ marginRight: 8, marginTop: 7 }}
                 />
-                <Text style={styles.text}>{item.de_descripcion}</Text>
+                <Text style={styles.text}>{item.descripcion}</Text>
               </View>
             ))}
           </View>

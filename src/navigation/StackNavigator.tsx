@@ -1,6 +1,6 @@
 import PunoSeguro from '../screens/PunoSeguroScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-// import MicroPuno from '../modules/micro-puno/screens/MicroPunoScreen';
+import MicroPuno from '../modules/micro-puno/screens/MicroPunoScreen';
 import AlumbradoPublico from '../screens/AlumbradoPublico';
 import Description from '../components/tupa/Description';
 import DescubrePunoScreen from '@/screens/DescubrePunoScreen';
@@ -78,11 +78,11 @@ const StackNavigator = () => {
       />
 
       {/* //! CHAPA TU MICRO! STACK SCREEN */}
-      {/* <Stack.Screen
+      <Stack.Screen
         name="MicroPuno"
         options={{ headerShown:false }}
         component={MicroPuno}
-      /> */}
+      />
 
       <Stack.Screen
         name="Menu"

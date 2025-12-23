@@ -87,8 +87,8 @@ android {
         applicationId "com.munipunodigital"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 8
-        versionName "1.3.0"
+        versionCode 9
+        versionName "1.4.0"
 
     }
     // Asegura que el App Bundle sólo incluya ABIs soportadas

@@ -62,7 +62,7 @@ export default function TupaScreen({ navigation }: TupaScreenProps) {
   return (
     <View style={{ ...theme.container, gap: theme.spacing.md }}>
       <InputBase
-        placeholder="Buscar por codigo ó nombre"
+        placeholder="Buscar por codigo o nombre"
         iconLeft={'search'}
         onChangeValue={handleSearch}
         noBorder

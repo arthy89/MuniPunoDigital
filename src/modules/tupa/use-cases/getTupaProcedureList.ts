@@ -6,7 +6,7 @@ export const getTupaProcedureList = async ({
   limit,
   search,
 }: FilterApi) => {
-  const response = await tupaApi.get(`/tupa`, {
+  const response = await tupaApi.get(`/sgd/tupas`, {
     params: { page, rowsPerPage: limit, search },
     headers: { noLoader: true },
   });
