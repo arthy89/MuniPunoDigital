@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, Pressable, Text, TextStyle, View, ViewStyle } from 'react-native';
+import type { StyleProp } from 'react-native';
 import InputBase, { InputBaseProps } from './InputBase';
 //import { GOOGLE_PLACES_API_KEY } from '@/config/env';
 import theme from '@/theme/theme';
@@ -12,9 +13,11 @@ interface Prediction {
 }
 
 interface InputSearchBaseProps extends InputBaseProps {
-  containerStyle?: ViewStyle;
+  containerStyle?: StyleProp<ViewStyle>;
   inputStyle?: TextStyle;
   onSelectPlace?: (place: Prediction) => void;
+  enableClearIcon?: boolean; // controla si se muestra la X azul
+  onPredictionsLoadingChange?: (loading: boolean) => void; // notifica inicio/fin de carga
 }
 
 const InputSearchBase = ({
@@ -85,7 +88,7 @@ const InputSearchBase = ({
         onPressInRight={handleClear}
         inputStyle={inputStyle}
         {...inputProps}
-        containerStyle={{ flex: 1, ...containerStyle }}
+        containerStyle={[{ flex: 1 }, containerStyle]}
       />
       
     </>

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
-import { Alert, Text, TouchableOpacity, StyleSheet, View } from 'react-native';
+import { Alert, Text, TouchableOpacity, StyleSheet, View, Dimensions } from 'react-native';
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
@@ -10,10 +10,12 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 interface ModalProps {
   onButtonSheetRef: React.RefObject<BottomSheetModal | null>;
-  snapPoints?: string[]; 
+  snapPoints?: (string | number)[]; 
   children?: React.ReactNode;
-  onClosePress?: () => void; // Permite personalizar el comportamiento de la X
+  onClosePress?: () => void;
 }
+
+const { height } = Dimensions.get('window');
 
 const BottomSheetModalComponent: React.FC<ModalProps> = ({
   onButtonSheetRef,
@@ -22,7 +24,17 @@ const BottomSheetModalComponent: React.FC<ModalProps> = ({
   onClosePress,
 }) => {
   const snapPointsInitial = useMemo(() => ['55%', '100%'], []);
-  const snapPointsInitial1 = useMemo(() => ['33%', '100%'], []);
+  
+  // Procesar snapPoints: si es ['100%'], convertir a altura de pantalla completa
+  const processedSnapPoints = useMemo(() => {
+    if (!snapPoints) return snapPointsInitial;
+    return snapPoints.map(point => {
+      if (point === '100%') {
+        return height;
+      }
+      return point;
+    });
+  }, [snapPoints, height]);
 
   // FIX: El BottomSheetModal se cerraba incluso al hacer click en zonas vacías del modal.
   // Solución: usamos BottomSheetBackdrop con pressBehavior="close" para que solo cierre
@@ -57,6 +69,8 @@ const BottomSheetModalComponent: React.FC<ModalProps> = ({
         index={0}
         snapPoints={snapPoints}
         enablePanDownToClose
+        enableContentPanningGesture={false}
+        enableHandlePanningGesture={true}
         keyboardBehavior="extend"
         android_keyboardInputMode="adjustResize"
         //onDismiss={handleSheetModalStop}

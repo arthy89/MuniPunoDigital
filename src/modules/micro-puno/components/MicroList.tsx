@@ -1,11 +1,15 @@
 import theme from '@/theme';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import MapView, { LatLng } from 'react-native-maps';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useRouteStore } from '../resources/useRouteStore';
 import { fetchWalkingRoute } from '../utils/walkingRouteHelper';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { getRutasAll } from '../use-cases/getRutasList';
+import useDebouncedSearch from '@/hooks/useDebouncedSearch';
+import FlatListInfiniteScroll from '@/components/flatlists/FlatListInfiniteScroll';
 
 type Ruta = any;
 interface RutaProps {
@@ -99,7 +103,7 @@ const RutaCard = ({ ruta, onButtonSheetRef, mapRef, setUbi, userLocation, isSele
         </View>
         <View style={{ flex: 1 }}>
           <Text style={styles.rutaNombre}>{ruta.nombre ?? 'Ruta'}</Text>
-          <Text style={styles.rutaDetalle}>{ruta.nombre ?? 'Ruta'}</Text>
+          <Text style={styles.rutaDetalle}>{ruta.orientacion === true ? 'Vuelta' : 'Ida'}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -116,13 +120,32 @@ interface ListaRutasProps {
   openedFromSearch?: boolean;
 }
 
+const LIMIT = 4;
+
 const ListaDeRutas: React.FC<ListaRutasProps> = ({ onButtonSheetRef, mapRef, setUbi, userLocation, pinHome, pinFin, openedFromSearch }) => {
   const fetchedRoutes = useRouteStore((s) => s.fetchedRoutes);
   const selectedRouteId = useRouteStore((s) => s.selectedRouteId);
   const setSelectedRouteId = useRouteStore((s) => s.setSelectedRouteId);
-  const items = (fetchedRoutes && fetchedRoutes.length > 0)
-    ? fetchedRoutes.map((r: any, i: number) => ({ ...r, id: String(i) }))
-    : [];
+  
+  const { handleSearch, search } = useDebouncedSearch();
+  
+  // Query infinita para obtener todas las rutas cuando NO viene desde búsqueda
+  const rutasAllQuery = useInfiniteQuery({
+    queryKey: ['rutasAll', { search }],
+    initialPageParam: 1,
+    queryFn: async ({ pageParam }) =>
+      getRutasAll({ page: pageParam, limit: LIMIT, search }),
+    getNextPageParam: (lastPage, allPages) =>
+      lastPage.length === LIMIT ? allPages.length + 1 : undefined,
+    enabled: !openedFromSearch, // Solo ejecutar cuando NO viene desde búsqueda
+  });
+
+  // Determinar qué datos mostrar
+  const items = openedFromSearch
+    ? (fetchedRoutes && fetchedRoutes.length > 0
+        ? fetchedRoutes.map((r: any, i: number) => ({ ...r, id: String(i) }))
+        : [])
+    : (rutasAllQuery.data?.pages.flat().map((r: any, i: number) => ({ ...r, id: String(i) })) ?? []);
 
   return (
     <View style={styles.container}>
@@ -144,30 +167,62 @@ const ListaDeRutas: React.FC<ListaRutasProps> = ({ onButtonSheetRef, mapRef, set
           placeholder="Buscar rutas..."
           style={styles.searchInput}
           placeholderTextColor={theme.colors.textPlaceholder}
-          editable={false}
+          onChangeText={handleSearch}
         />
       )}
-      {items.length === 0 ? (
-        <View style={{ alignItems: 'center', marginTop: 32 }}>
-          <Text style={{ color: '#888', fontSize: 16 }}>No hay rutas disponibles</Text>
-        </View>
+      {openedFromSearch ? (
+        // Modo búsqueda desde SearchRoutes: sin scroll infinito
+        items.length === 0 ? (
+          <View style={{ alignItems: 'center', marginTop: 32 }}>
+            <Text style={{ color: '#888', fontSize: 16 }}>No hay rutas disponibles</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={items}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <RutaCard 
+                ruta={item} 
+                mapRef={mapRef} 
+                onButtonSheetRef={onButtonSheetRef} 
+                setUbi={setUbi} 
+                userLocation={userLocation}
+                isSelected={selectedRouteId === item.id}
+                onSelect={() => setSelectedRouteId(item.id)}
+              />
+            )}
+            contentContainerStyle={{ paddingBottom: 20 }}
+          />
+        )
       ) : (
-        <FlatList
-          data={items}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <RutaCard 
-              ruta={item} 
-              mapRef={mapRef} 
-              onButtonSheetRef={onButtonSheetRef} 
-              setUbi={setUbi} 
-              userLocation={userLocation}
-              isSelected={selectedRouteId === item.id}
-              onSelect={() => setSelectedRouteId(item.id)}
-            />
-          )}
-          contentContainerStyle={{ paddingBottom: 20 }}
-        />
+          // Modo normal: con scroll infinito
+        <View style={styles.listContainer}>
+          <FlatListInfiniteScroll
+            data={items}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <RutaCard 
+                ruta={item} 
+                mapRef={mapRef} 
+                onButtonSheetRef={onButtonSheetRef} 
+                setUbi={setUbi} 
+                userLocation={userLocation}
+                isSelected={selectedRouteId === item.id}
+                onSelect={() => setSelectedRouteId(item.id)}
+              />
+            )}
+            hasNextPage={rutasAllQuery.hasNextPage}
+            isLoading={rutasAllQuery.isLoading}
+            isFetchingNextPage={rutasAllQuery.isFetchingNextPage}
+            onEndReached={() => rutasAllQuery.fetchNextPage()}
+            scrollEnabled={true}
+            nestedScrollEnabled={true}
+            contentContainerStyle={{ paddingBottom: 120, gap: 0 }}
+            onEndReachedThreshold={0.4}
+            initialNumToRender={4}
+            maxToRenderPerBatch={4}
+          />
+        </View>
       )}
     </View>
   );
@@ -179,6 +234,10 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     flex: 1,
+  },
+  listContainer: {
+    flex: 1,
+    height: 400, 
   },
   title: {
     fontSize: 18,

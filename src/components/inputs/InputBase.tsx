@@ -7,6 +7,7 @@ import {
   ViewStyle,
   TouchableOpacity,
 } from 'react-native';
+import type { StyleProp } from 'react-native';
 import { IconBaseProps } from '@/interfaces/IconTypes';
 import { ColorTheme } from '@/theme/colors';
 import theme from '@/theme/theme';
@@ -16,12 +17,13 @@ import React, { ReactElement } from 'react';
 
 export interface InputBaseProps extends TextInputProps, IconBaseProps {
   allowedRegex?: RegExp;
-  containerStyle?: ViewStyle;
+  containerStyle?: StyleProp<ViewStyle>;
   inputStyle?: TextStyle;
   onChangeValue?: (value: string) => void;
   noBorder?: boolean;
   shadow?: boolean;
   onPressInRight?: () => void;
+  inputRef?: React.Ref<TextInput>;
 }
 
 const InputBase = ({

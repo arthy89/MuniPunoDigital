@@ -30,8 +30,8 @@ import { calculateDistance, fetchWalkingRoute, fetchBothWalkingSegments } from '
 
 const { width, height } = Dimensions.get('window');
 
-const PIN_GREEN = require('@/assets/images/pins/verde4.png');
-const PIN_RED = require('@/assets/images/pins/rojo4.png');
+const PIN_GREEN = require('@/assets/images/pins/verde.png');
+const PIN_RED = require('@/assets/images/pins/rojo.png');
 const PIN_HOME = require('@/assets/images/pins/pin-inicio.png');
 const PIN_FIN = require('@/assets/images/pins/pin-fin.png');
 
@@ -585,7 +585,7 @@ const Map = () => {
         <MapTypeModal setMapType={setMapType} />
       </Modal>
       {/** Modal para Listado de Rutas*/}
-      <Modal onButtonSheetRef={RoutesRef} snapPoints={['55%', '65', '80%']}   >
+      <Modal onButtonSheetRef={RoutesRef} snapPoints={['55%', '65%', '80%']}   >
         <ListaDeRutas 
           mapRef={mapRef} 
           onButtonSheetRef={RoutesRef} 
