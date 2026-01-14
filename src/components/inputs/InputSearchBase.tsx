@@ -46,7 +46,8 @@ const InputSearchBase = ({
             language: 'es',
             components: 'country:pe',
             location: '-15.8402,-70.0219', // Coordenadas del centro de Puno
-            radius: 50000 // en metros, por ejemplo 50km
+            radius: 20000, // 20km - área metropolitana de Puno
+            strictbounds: true // Fuerza resultados solo dentro del radio
           },
         });
        
