@@ -73,6 +73,7 @@ const BottomSheetModalComponent: React.FC<ModalProps> = ({
         enableHandlePanningGesture={true}
         keyboardBehavior="extend"
         android_keyboardInputMode="adjustResize"
+        enableDynamicSizing={false}
         //onDismiss={handleSheetModalStop}
         //backdropComponent={renderBackdrop}
         >
