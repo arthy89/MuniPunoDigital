@@ -91,28 +91,28 @@ android {
         versionName "1.5.0"
 
     }
-    // // Asegura que el App Bundle sólo incluya ABIs soportadas
-    // splits {
-    //     abi {
-    //         enable true
-    //         reset()
-    //         include 'armeabi-v7a', 'arm64-v8a'
-    //         universalApk false
-    //     }
-    // }
-    // // Excluye librerías nativas para arquitecturas x86/x86_64 que provocan el error de 16 KB
-    // packagingOptions {
-    //     jniLibs {
-    //         excludes += [
-    //             '**/x86/**',
-    //             '**/x86_64/**',
-    //             '**/x86/*.so',
-    //             '**/x86_64/*.so',
-    //             '**/x86/libandroidlame.so',
-    //             '**/x86_64/libandroidlame.so'
-    //         ]
-    //     }
-    // }
+    // Asegura que el App Bundle sólo incluya ABIs soportadas
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'armeabi-v7a', 'arm64-v8a'
+            universalApk false
+        }
+    }
+    // Excluye librerías nativas para arquitecturas x86/x86_64 que provocan el error de 16 KB
+    packagingOptions {
+        jniLibs {
+            excludes += [
+                '**/x86/**',
+                '**/x86_64/**',
+                '**/x86/*.so',
+                '**/x86_64/*.so',
+                '**/x86/libandroidlame.so',
+                '**/x86_64/libandroidlame.so'
+            ]
+        }
+    }
     signingConfigs {
         debug {
             storeFile file('debug.keystore')

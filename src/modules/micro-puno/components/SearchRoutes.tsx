@@ -51,21 +51,8 @@ const SearchRoutes = forwardRef<SearchRoutesHandle, SearchRoutesProps>(({ setSho
     // Bloqueo de predicciones tras selección hasta nueva escritura
     const [predictionsLocked, setPredictionsLocked] = useState(false);
     const [isLoadingPredictions, setIsLoadingPredictions] = useState(false);
-
-    const handleRutasCercanas = async () => {
-        if (!origenCoords || !destinoCoords) return;
-        try {
-            const data = await getRutasList({ origen: origenCoords, destino: destinoCoords });
-            let routesArray: any[] = [];
-            if (Array.isArray(data)) routesArray = data;
-            else if (Array.isArray(data?.routes)) routesArray = data.routes;
-            else if (Array.isArray(data?.rutas)) routesArray = data.rutas;
-            else if (data) routesArray = [data];
-            setFetchedRoutes(routesArray.slice(0, 3));
-        } catch (error) {
-            console.error('Error al obtener rutas del backend:', error);
-        }
-    }
+    // Flag para controlar si ya se auto-pobló la ubicación (solo la primera vez)
+    const hasAutoPopulatedRef = useRef(false);
 
     const [origenCoords, setOrigenCoords] = useState<LatLng | null>(null);
     const [destinoCoords, setDestinoCoords] = useState<LatLng | null>(null);
@@ -82,6 +69,40 @@ const SearchRoutes = forwardRef<SearchRoutesHandle, SearchRoutesProps>(({ setSho
     // Refs para enfocar inputs programáticamente
     const origenInputRef = useRef<TextInput>(null);
     const destinoInputRef = useRef<TextInput>(null);
+
+    // Establecer el input de origen cuando se abre el buscador
+    useEffect(() => {
+        if (show && !origenCoords && userLocation && !hasAutoPopulatedRef.current) {
+            setActiveInput('origen');
+        }
+        // Resetear la flag cuando se cierra el modal
+        if (!show) {
+            hasAutoPopulatedRef.current = false;
+        }
+    }, [show, userLocation, origenCoords]);
+
+    // Ejecutar la geocodificación cuando activeInput es 'origen' (solo la primera vez)
+    useEffect(() => {
+        if (show && activeInput === 'origen' && !origenCoords && userLocation && !hasAutoPopulatedRef.current) {
+            getUserDirection();
+            hasAutoPopulatedRef.current = true; // Marcar que ya se ejecutó
+        }
+    }, [activeInput, show, userLocation, origenCoords]);
+
+    const handleRutasCercanas = async () => {
+        if (!origenCoords || !destinoCoords) return;
+        try {
+            const data = await getRutasList({ origen: origenCoords, destino: destinoCoords });
+            let routesArray: any[] = [];
+            if (Array.isArray(data)) routesArray = data;
+            else if (Array.isArray(data?.routes)) routesArray = data.routes;
+            else if (Array.isArray(data?.rutas)) routesArray = data.rutas;
+            else if (data) routesArray = [data];
+            setFetchedRoutes(routesArray.slice(0, 3));
+        } catch (error) {
+            console.error('Error al obtener rutas del backend:', error);
+        }
+    }
 
     useImperativeHandle(ref, () => ({
         clearAutocompleteIfSelecting: () => {

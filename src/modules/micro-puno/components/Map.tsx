@@ -427,7 +427,7 @@ const Map = () => {
         style={StyleSheet.absoluteFillObject}
         showsUserLocation={showUserLocation}
         showsMyLocationButton={false}
-        showsCompass={true}
+        // showsCompass={true}
         mapType={mapType}
         // loadingEnabled={true}
         initialRegion={{
@@ -504,8 +504,8 @@ const Map = () => {
       </MapView>
 
       <View style={{
-        height: 80,
-        paddingTop: 10,
+        height: 100,
+        paddingTop: 40,
         paddingHorizontal: theme.spacing.sm,
         flexDirection: 'row',
         alignItems: 'center',
@@ -585,7 +585,7 @@ const Map = () => {
         <MapTypeModal setMapType={setMapType} />
       </Modal>
       {/** Modal para Listado de Rutas*/}
-      <Modal onButtonSheetRef={RoutesRef} snapPoints={['55%', '65%', '80%']}   >
+      <Modal onButtonSheetRef={RoutesRef} snapPoints={['55%', '65%', '60%']}   >
         <ListaDeRutas 
           mapRef={mapRef} 
           onButtonSheetRef={RoutesRef} 
@@ -600,7 +600,7 @@ const Map = () => {
       {/** Modal para Buscar rutas */}
       <Modal 
         onButtonSheetRef={SearchRoutesRef}
-        snapPoints={showsContentLarge ? ['100%'] : ['35%', '100%']}
+        snapPoints={showsContentLarge ? ['88%'] : ['35%', '88%']}
         onClosePress={() => {
           // Si estamos en modo selección (showsContentLarge=false), volver a "Chapa tu micro" (true)
           if (!showsContentLarge) {
@@ -665,7 +665,7 @@ const styles = StyleSheet.create({
   },
   botonMyLocation: {
     position: 'absolute',
-    top: "24%",
+    top: "26%",
     right: theme.spacing.sm,
     backgroundColor: '#0088CC',
     borderRadius: 50,
@@ -675,7 +675,7 @@ const styles = StyleSheet.create({
   verRutasBtn: {
     position: 'absolute',
     right: theme.spacing.sm,
-    top: "31%",
+    top: "33%",
     padding: 8,
     borderRadius: 50,
     alignItems: 'center',
@@ -684,7 +684,7 @@ const styles = StyleSheet.create({
   LayerTypeBtn: {
     position: 'absolute',
     right: theme.spacing.sm,
-    top: "10%",
+    top: "12%",
     padding: 8,
     borderRadius: 50,
     alignItems: 'center',
@@ -693,7 +693,7 @@ const styles = StyleSheet.create({
   compass: {
     position: 'absolute',
     right: theme.spacing.sm,
-    top: "17%",
+    top: "19%",
     padding: 8,
     borderRadius: 50,
     alignItems: 'center',
@@ -702,7 +702,7 @@ const styles = StyleSheet.create({
   deleteBtn: {
     position: 'absolute',
     right: theme.spacing.sm,
-    top: "38%",
+    top: "40%",
     padding: 8,
     borderRadius: 50,
     alignItems: 'center',
